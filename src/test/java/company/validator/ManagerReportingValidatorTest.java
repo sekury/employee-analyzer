@@ -16,34 +16,34 @@ class ManagerReportingValidatorTest {
     ManagerReportingValidator reportingValidator = new ManagerReportingValidator();
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2, 3, 4})
-    void whenShortReportingLine_thenNoMessage(int reportLength) {
-        var managerTree = prepareManagerTree();
-        Optional<String> message = reportingValidator.validate(reportLength, managerTree);
+    @ValueSource(ints = {0, 1, 2, 3, 4, 5})
+    void whenShortReportingLine_thenNoMessage(int managerLevel) {
+        var manager = prepareManager();
+        Optional<String> message = reportingValidator.validate(managerLevel, manager);
         assertTrue(message.isEmpty());
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {5, Integer.MAX_VALUE})
-    void whenLongReportingLine_thenReturnMessage(int reportLength) {
-        var managerTree = prepareManagerTree();
+    @ValueSource(ints = {6, Integer.MAX_VALUE})
+    void whenLongReportingLine_thenReturnMessage(int managerLevel) {
+        var manager = prepareManager();
 
-        Optional<String> message = reportingValidator.validate(reportLength, managerTree);
+        Optional<String> message = reportingValidator.validate(managerLevel, manager);
 
         assertTrue(message.isPresent());
-        int expectedDiff = reportLength - 4;
+        int expectedDiff = managerLevel - 5;
 
         assertEquals("Employee{id=1, firstName='John', lastName='Doe', salary=100.0, managerId=null} reporting line is longer by " + expectedDiff, message.get());
     }
 
     @ParameterizedTest
     @ValueSource(ints = {Integer.MIN_VALUE, -1})
-    void whenInvalidReportingLine_thenThrowException(int reportLength) {
-        var managerTree = prepareManagerTree();
-        assertThrows(IllegalArgumentException.class, () -> reportingValidator.validate(reportLength, managerTree));
+    void whenInvalidReportingLine_thenThrowException(int managerLevel) {
+        var manager = prepareManager();
+        assertThrows(IllegalArgumentException.class, () -> reportingValidator.validate(managerLevel, manager));
     }
 
-    private static Manager prepareManagerTree() {
+    private static Manager prepareManager() {
         return ManagerBuilder.withEmployees(List.of(new Employee(1, "John", "Doe", 100))).build();
     }
 }

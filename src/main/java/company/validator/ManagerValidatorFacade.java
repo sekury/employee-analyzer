@@ -21,9 +21,9 @@ public class ManagerValidatorFacade implements ManagerValidator {
         validate(0, manager);
     }
 
-    private void validate(int reportLevel, Manager manager) {
+    private void validate(int managerLevel, Manager manager) {
         salaryValidator.validate(manager).ifPresent(System.out::println);
-        reportingValidator.validate(reportLevel, manager).ifPresent(System.out::println);
-        manager.subordinates().forEach(node -> validate(reportLevel + 1, node));
+        reportingValidator.validate(managerLevel, manager).ifPresent(System.out::println);
+        manager.subordinates().forEach(node -> validate(managerLevel + 1, node));
     }
 }
